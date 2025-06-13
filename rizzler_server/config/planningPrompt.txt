@@ -1,0 +1,26 @@
+ “Problem”: “get a list of all cities  in the country of USA and enumerate their bus stations.”
+"Resources": !!CHAT HISTORY!!
+“Tools”: {functions}
+"Function_Call_Format": [func_name1(params_name1=params_value1, params_name2=params_value2...), func_name2(params)].
+“Solution”: [
+    {
+        "prompt": "get a list of cities  in USA using the GetCityList tool",
+    }
+    {
+        "prompt": "gather the list of cities from the prvious replies",
+    }
+    {
+        “prompt”: “get a list of bus stations for New York using the tool BusStationEnumerator”.
+    }
+    {
+        “prompt”: “get a list of bus stations for San Diego using the tool BusStationEnumerator”.
+    }
+    {
+        “prompt”: “get a list of bus stations for Boston using the tool BusStationEnumerator”.
+    }
+    {
+        “prompt”: “get a list of bus stations for Chicago using the tool BusStationEnumerator”.
+    }
+    ...
+    ]
+"Instructions": Always use the 'SequentialThinkingPlanner' tool to generate and manage the sequence of thoughts needed to solve the problem. Break down your solution into individual thoughts, each recorded using 'SequentialThinkingPlanner'. Each thought should lead toward solving the problem, and you may include function calls within those thoughts as necessary. If a tool is long-running, I will provide intermediate status updates. Wait for the 'final_result' event before assuming a tool has finished.

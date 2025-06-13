@@ -1,0 +1,27 @@
+{
+    "id": "passive-linux-lfi-fuzzing-hints",
+    "name": "Potential Linux LFI Hints in URL Parameters",
+    "severity": "Info",
+    "confidence": "Tentative",
+    "description": "URL parameters commonly associated with file inclusion or resource loading were detected. This suggests potential Local File Inclusion (LFI) points. Active scanning is recommended to confirm if /etc/passwd or other sensitive files can be accessed.",
+    "passive_hint_type": "LFI_LINUX_GENERIC_HINT",
+    "match_conditions": [
+        {
+            "part": "url_param_name",
+            "keywords": [
+                "q", "s", "search", "id", "action", "keyword", "query", "page", 
+                "keywords", "url", "view", "cat", "name", "key", "p", "redirect",
+                "filename", "file", "path", "document", "item", "pg", "style",
+                "template", "folder", "dir", "include", "require", "show", "load",
+                "retrieve", "read", "doc", "fetch", "open", "conf", "config", "setting"
+            ],
+            "condition": "or",
+            "note": "Parameter name is commonly used in LFI vulnerabilities or for specifying file/resource paths.",
+            "specific_passive_hint_type": "LFI_LINUX_PARAM_NAME_HINT"
+        }
+    ],
+    "match_condition_logic": "or",
+    "evidence_format": "Potential LFI Hint: Parameter '{param_name_or_path}' found in {match_location}. Contextual Note: '{note}'. Specific Hint Type: '{specific_passive_hint_type}'. This parameter might be vulnerable to LFI targeting Linux systems (e.g., /etc/passwd).",
+    "remediation_suggestion": "Validate and sanitize all user input used in file paths. Use an allow-list of permitted files/directories. Implement proper path canonicalization to prevent traversal attacks. Active LFI scanning targeting /etc/passwd and other sensitive files is recommended if this parameter handles file operations.",
+    "tags": ["lfi", "linux", "fuzz_hint", "file_inclusion", "passive_hint", "cwe-22"]
+}

@@ -1,0 +1,62 @@
+{
+    "id": "passive-xss-reflection-hints",
+    "name": "Potential XSS Reflection Hints in HTML Body",
+    "severity": "Low",
+    "confidence": "Tentative",
+    "description": "A URL parameter's value appears to be reflected in the HTML response body in a context that might be exploitable for XSS. Active scanning is required for confirmation.",
+    "passive_hint_type": "XSS_REFLECTION_GENERIC_HINT",
+    "match_conditions": [
+        {
+            "part": "url_param_value_reflected_in_body_unencoded",
+            "regexes": [".+"], "condition": "or",
+            "note": "URL parameter value reflected. Check if reflection occurs inside <script>...</script> tags without proper JS escaping.",
+            "specific_passive_hint_type": "XSS_URL_PARAM_REFLECTED_IN_SCRIPT_HINT"
+        },
+        {
+            "part": "url_param_value_reflected_in_body_unencoded",
+            "regexes": [".+"], "condition": "or",
+            "note": "URL parameter value reflected. Check if reflection occurs as an unquoted HTML attribute value (e.g., attr=value_reflected here).",
+            "specific_passive_hint_type": "XSS_URL_PARAM_REFLECTED_IN_UNQUOTED_ATTR_HINT"
+        },
+        {
+            "part": "url_param_value_reflected_in_body_unencoded",
+            "regexes": [".+"], "condition": "or",
+            "note": "URL parameter value reflected. Check if reflection occurs within a single-quoted HTML attribute value (e.g., attr='value_reflected_here').",
+            "specific_passive_hint_type": "XSS_URL_PARAM_REFLECTED_IN_SINGLE_QUOTED_ATTR_HINT"
+        },
+        {
+            "part": "url_param_value_reflected_in_body_unencoded",
+            "regexes": [".+"], "condition": "or",
+            "note": "URL parameter value reflected. Check if reflection occurs within a double-quoted HTML attribute value (e.g., attr=\"value_reflected_here\").",
+            "specific_passive_hint_type": "XSS_URL_PARAM_REFLECTED_IN_DOUBLE_QUOTED_ATTR_HINT"
+        },
+        {
+            "part": "url_param_value_reflected_in_body_unencoded",
+            "regexes": [".+"], "condition": "or",
+            "note": "URL parameter value reflected. Check if reflection occurs within an HTML event handler attribute (e.g., onclick=\"reflected_value_here\").",
+            "specific_passive_hint_type": "XSS_URL_PARAM_REFLECTED_IN_EVENT_HANDLER_HINT"
+        },
+        {
+            "part": "url_param_value_reflected_in_body_unencoded",
+            "regexes": [".+"], "condition": "or",
+            "note": "URL parameter value reflected. Check if reflection occurs in a context where a 'javascript:' URI might be formed (e.g., href=\"javascript:reflected_value_here\").",
+            "specific_passive_hint_type": "XSS_URL_PARAM_REFLECTED_IN_JAVASCRIPT_URI_HINT"
+        },
+        {
+            "part": "url_param_value_reflected_in_body_unencoded",
+            "regexes": [".+"], "condition": "or",
+            "note": "URL parameter value reflected. Check if reflection occurs within an HTML comment and might allow comment breakout.",
+            "specific_passive_hint_type": "XSS_URL_PARAM_REFLECTED_IN_COMMENT_HINT"
+        },
+        {
+            "part": "url_param_value_reflected_in_body_unencoded",
+            "regexes": [".+"], "condition": "or",
+            "note": "URL parameter value reflected directly into HTML content. Check if HTML tags can be injected.",
+            "specific_passive_hint_type": "XSS_URL_PARAM_REFLECTED_IN_HTML_CONTENT_HINT"
+        }
+    ],
+    "match_condition_logic": "or",
+    "evidence_format": "Potential XSS: URL parameter '{param_name_or_path}' (actual reflected value was '{reflected_actual_value}', matched pattern was '{matched_value}') found in HTML body. Contextual Note: '{note}'. Specific Hint Type: '{specific_passive_hint_type}'.",
+    "remediation_suggestion": "Actively test this reflection point for XSS. Ensure proper contextual output encoding for all user-supplied data. Implement a strong Content Security Policy (CSP).",
+    "tags": ["xss", "reflection", "passive_hint", "url_parameter"]
+}

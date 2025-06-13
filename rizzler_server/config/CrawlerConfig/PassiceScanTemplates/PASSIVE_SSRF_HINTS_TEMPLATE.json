@@ -1,0 +1,63 @@
+{
+    "id": "passive-ssrf-hints",
+    "name": "Potential SSRF Hints in URL Parameters or Body",
+    "severity": "Low",
+    "confidence": "Tentative",
+    "description": "URL parameters or response body content suggest that the application might be making server-side requests to user-supplied URLs. This can inform targeted active scanning for SSRF vulnerabilities.",
+    "passive_hint_type": "SSRF_GENERIC_HINT",
+    "match_conditions": [
+        {
+            "part": "url_param_name",
+            "keywords": [
+                "url", "uri", "target", "dest", "destination", "host", "site", "endpoint",
+                "fetch", "load", "import", "include", "redirect", "return", "show", "view",
+                "feed", "rss", "proxy", "remote", "file", "path", "document", "data",
+                "src", "source", "image_url", "img", "page", "content", "report", "out"
+            ],
+            "condition": "or",
+            "note": "URL parameter name commonly used for specifying external resources.",
+            "specific_passive_hint_type": "SSRF_URL_PARAM_NAME_HINT"
+        },
+        {
+            "part": "url_param_value",
+            "regexes": [
+                "(?i)^(https?|ftp|file|gopher|sftp|tftp|dict):\\/\\/",
+                "(?i)^www\\d{0,3}\\.",
+                "(?i)^[a-zA-Z0-9.-]+\\.(com|net|org|io|gov|edu|biz|info|co|uk|de|fr|jp|cn|ru|au|ca|eu|ai|app|dev|me|xyz)(\\/|\\?|$)",
+                "(?i)^([0-9]{1,3}\\.){3}[0-9]{1,3}(\\/|\\?|:|$)"
+            ],
+            "condition": "or",
+            "note": "URL parameter value appears to be a full URL or an IP address.",
+            "specific_passive_hint_type": "SSRF_URL_PARAM_VALUE_HINT"
+        },
+        {
+            "part": "url_param_value_reflected_in_body_unencoded",
+            "regexes": [
+                "(?i)(127\\.0\\.0\\.1|localhost|169\\.254\\.169\\.254|metadata\\.google\\.internal)",
+                "(?i)file:\\/\\/(etc\\/passwd|boot\\.ini|windows\\/system32)"
+            ],
+            "condition": "or",
+            "note": "A URL parameter's value, which itself looks like an internal/metadata URL or file path, is reflected in the response body.",
+            "specific_passive_hint_type": "SSRF_REFLECTED_INTERNAL_URL_HINT"
+        },
+        {
+            "part": "body_content",
+            "keywords": [
+                "ami-id", "instance-id", "public-ipv4",
+                "computeMetadata", "instance/", "project/",
+                "\"vmId\"", "\"compute\":",
+                "root:x:0:0", "boot.ini"
+            ],
+            "regexes": [
+                "(?i)Error connecting to|Connection refused|Could not resolve host|Timeout connecting to.*(127\\.0\\.0\\.1|localhost|169\\.254\\.169\\.254)"
+            ],
+            "condition": "or",
+            "note": "Response body contains content or error messages indicative of an attempt to fetch internal/metadata resources or common files.",
+            "specific_passive_hint_type": "SSRF_BODY_CONTENT_INTERNAL_HINT"
+        }
+    ],
+    "match_condition_logic": "or",
+    "evidence_format": "Potential SSRF Hint: Matched pattern/keyword '{matched_value}' in {match_location} (Parameter/Path: '{param_name_or_path}', Reflected Value: '{reflected_actual_value}'). Contextual Note: '{note}'. Specific Hint Type: '{specific_passive_hint_type}'.",
+    "remediation_suggestion": "If the application makes server-side requests based on user input, ensure strict validation and use an allow-list for target domains/IPs and schemes. Disable unused URL schemes. Consider running active scans targeting SSRF vulnerabilities.",
+    "tags": ["ssrf", "url_parameter", "resource_loading", "passive_hint", "cloud_metadata"]
+}

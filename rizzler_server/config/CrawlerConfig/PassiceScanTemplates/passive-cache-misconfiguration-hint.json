@@ -1,0 +1,61 @@
+{
+    "id": "passive-cache-misconfiguration-hint",
+    "name": "Potential Cache Misconfiguration or Suspicious Header Echo Hint",
+    "severity": "Low",
+    "confidence": "Tentative",
+    "description": "Observed HTTP response headers, caching directives, or echoed request-like headers in the response that might indicate a susceptibility to web cache poisoning or related caching issues. Requires active testing to confirm.",
+    "passive_hint_type": "CACHE_MISCONFIGURATION_HINT",
+    "match_conditions": [
+        {
+            "part": "header_value",
+            "header_name_filter": "Vary",
+            "keywords": ["*"],
+            "condition": "or",
+            "note": "A 'Vary: *' header can sometimes lead to issues if not handled carefully by all caching layers."
+        },
+        {
+            "part": "header_value",
+            "header_name_filter": "Cache-Control",
+            "regexes": [
+                "public",
+                "s-maxage=([1-9]\\d{2,})"
+            ],
+            "condition": "or",
+            "note": "Indicates content is publicly cacheable for a significant duration."
+        },
+        {
+            "part": "header_value",
+            "header_name_filter": "X-Cache",
+            "keywords": ["HIT", "MISS", "STALE"],
+            "condition": "or"
+        },
+        {
+            "part": "header_value",
+            "header_name_filter": "X-Forwarded-Host",
+            "regexes": [".+"],
+            "condition": "or"
+        },
+        {
+            "part": "header_value",
+            "header_name_filter": "X-Original-URL",
+            "regexes": [".+"],
+            "condition": "or"
+        },
+        {
+            "part": "body_content",
+            "keywords": [
+                "localhost", "127.0.0.1"
+            ],
+            "regexes": [
+              "X-Forwarded-Host:\\s*([^<\\s]+)",
+              "X-Original-URL:\\s*([^<\\s]+)"
+            ],
+            "condition": "or",
+            "note": "Looks for reflections of typical unkeyed header names or their common values in the response body."
+        }
+    ],
+    "match_condition_logic": "or",
+    "evidence_format": "Potential cache issue: Matched '{matched_value}' in response {match_location} (related to header/parameter: '{param_name_or_path}'). Note: {note}",
+    "remediation_suggestion": "Review cache configuration thoroughly. Ensure the 'Vary' header correctly lists all request headers that influence the response. Use appropriate Cache-Control directives. Actively test for cache poisoning vulnerabilities using specialized tools.",
+    "tags": ["cache", "passive_hint", "misconfiguration"]
+}

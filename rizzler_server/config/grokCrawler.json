@@ -1,0 +1,8 @@
+{
+    "client_id": "REDDIT CLIENT-ID FOR APPLICATION",
+    "client_secret": "REDDIT CLIENT SECRET FOR APPLICATION",
+    "user_agent": "REDDIT AGENT NAME",
+    "username": "REDDIT_USERNAME",
+    "password": "REDDIT_PASSWORD",
+    "github_token": "GITHUB_TOKEN"
+}

@@ -1,0 +1,49 @@
+{
+    "id": "passive-sqli-hints",
+    "name": "Potential SQL Injection Hints in URL",
+    "severity": "Medium",
+    "confidence": "Tentative",
+    "description": "Keywords or patterns commonly associated with SQL injection vulnerabilities were found in a URL parameter name or value, or in the URL path.",
+    "passive_hint_type": "SQL_INJECTION_GENERIC_HINT",
+    "match_conditions": [
+        {
+            "part": "url_param_name",
+            "keywords": ["id", "sel", "select", "from", "union", "where", "group", "order", "limit", "fetch", "delete", "insert", "update", "user", "pass", "name", "query", "search", "cat", "category", "item", "prod", "product", "article", "page_id", "file"],
+            "condition": "or",
+            "note": "Common SQL-related keyword found in URL parameter name.",
+            "specific_passive_hint_type": "SQLI_URL_PARAM_NAME_KEYWORD_HINT"
+        },
+        {
+            "part": "url_param_value",
+            "regexes": [
+                "['\\\"].*(OR|AND)\\s+['\\\"]\\w+['\\\"]\\s*=\\s*['\\\"]\\w+['\\\"]",
+                "UNION\\s+(ALL\\s+)?SELECT",
+                "SLEEP\\(\\d+\\)",
+                "BENCHMARK\\(\\d+",
+                "--",
+                "#",
+                ";",
+                "/\\*.*?\\*/",
+                "(?i)(SELECT\\s.*FROM\\s)",
+                "(?i)(INSERT\\s.*INTO\\s)",
+                "(?i)(UPDATE\\s.*SET\\s)",
+                "(?i)(DELETE\\s.*FROM\\s)"
+            ],
+            "condition": "or",
+            "note": "Common SQL injection pattern or character found in URL parameter value.",
+            "specific_passive_hint_type": "SQLI_URL_PARAM_VALUE_PATTERN_HINT"
+        },
+        {
+            "part": "url_path",
+            "keywords": ["/product/", "/user/", "/item/", "/article/", "/category/", "/search.php", "/query.asp"],
+            "regexes": ["/\\d+$", "/[a-zA-Z0-9_\\-]+=\\d+"],
+            "condition": "or",
+            "note": "URL path structure or segment often associated with database interaction.",
+            "specific_passive_hint_type": "SQLI_URL_PATH_STRUCTURE_HINT"
+        }
+    ],
+    "match_condition_logic": "or",
+    "evidence_format": "Potential SQLi: Pattern/Keyword '{matched_value}' found in {match_location} '{param_name_or_path}'. Contextual Note: '{note}'. Specific Hint Type: '{specific_passive_hint_type}'.",
+    "remediation_suggestion": "Use parameterized queries (prepared statements) for all database interactions. Validate and sanitize all user inputs. Apply input whitelisting.",
+    "tags": ["sqli", "injection", "passive_hint", "database"]
+}

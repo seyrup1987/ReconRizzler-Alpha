@@ -1,0 +1,21 @@
+{
+    "id": "passive-xff-bypass-candidate-hints",
+    "name": "403 Forbidden Page - XFF Bypass Candidate",
+    "severity": "Info",
+    "confidence": "Firm",
+    "description": "The requested page returned an HTTP 403 Forbidden status. This page might be a candidate for access control bypass techniques, such as using X-Forwarded-For headers with internal IP addresses.",
+    "passive_hint_type": "HTTP_403_FORBIDDEN_XFF_CANDIDATE",
+    "match_conditions": [
+        {
+            "part": "status_code", 
+            "keywords": ["403"], 
+            "condition": "or", 
+            "note": "Page returned HTTP 403 Forbidden.",
+            "specific_passive_hint_type": "HTTP_403_FORBIDDEN_PAGE_DETECTED"
+        }
+    ],
+    "match_condition_logic": "or",
+    "evidence_format": "XFF Bypass Candidate: Page '{url_tested}' returned HTTP 403 Forbidden. Specific Hint Type: '{specific_passive_hint_type}'. Consider testing X-Forwarded-For bypass techniques.",
+    "remediation_suggestion": "If a 403 bypass is confirmed via XFF or other headers, ensure that access controls are not solely reliant on the apparent source IP address when behind a proxy. Validate and sanitize all forwarded headers. Configure proxies to overwrite or append to XFF headers securely, rather than blindly trusting client-supplied values.",
+    "tags": ["access_control", "bypass", "xff", "403_forbidden", "proxy", "passive_hint", "cwe-284", "cwe-290"]
+}

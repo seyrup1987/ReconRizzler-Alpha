@@ -1,0 +1,109 @@
+{
+    "id": "passive-jquery-detection-hints",
+    "name": "jQuery Library and Plugin Detection Hints",
+    "severity": "Info",
+    "confidence": "Firm",
+    "description": "The page appears to include jQuery or known jQuery plugins. This can inform targeted active scanning for vulnerabilities specific to these libraries and their versions.",
+    "passive_hint_type": "JQUERY_GENERIC_PRESENCE_HINT",
+    "match_conditions": [
+        {
+            "part": "body_content",
+            "regexes": [
+                "jquery\\.min\\.js",
+                "jquery\\.js",
+                "jquery-([0-9\\.]+)(\\.min)?\\.js",
+                "ajax\\.googleapis\\.com/ajax/libs/jquery/",
+                "jQuery\\.fn\\.jquery\\s*=\\s*[\"']([0-9\\.]+)[\"']",
+                "jquery\\s*:\\s*[\"']([0-9\\.]+)[\"']"
+            ],
+            "condition": "or",
+            "note": "Indicates presence of jQuery core library.",
+            "specific_passive_hint_type": "JQUERY_CORE_DETECTED_HINT"
+        },
+        {
+            "part": "body_content",
+            "regexes": [
+                "jquery-ui\\.min\\.js",
+                "jquery-ui\\.js",
+                "jquery-ui-([0-9\\.]+)(\\.min)?\\.js",
+                "\\$\\.ui\\.version\\s*=\\s*[\"']([0-9\\.]+)[\"']"
+            ],
+            "condition": "or",
+            "note": "Indicates presence of jQuery UI plugin.",
+            "specific_passive_hint_type": "JQUERY_UI_DETECTED_HINT"
+        },
+        {
+            "part": "body_content",
+            "regexes": [
+                "jquery\\.mobile",
+                "jquery\\.mobile-([0-9\\.]+)(\\.min)?\\.js"
+            ],
+            "condition": "or",
+            "note": "Indicates presence of jQuery Mobile plugin.",
+            "specific_passive_hint_type": "JQUERY_MOBILE_DETECTED_HINT"
+        },
+        {
+            "part": "body_content",
+            "regexes": [
+                "jquery\\.jplayer",
+                "jplayer\\.min\\.js",
+                "\\$\\.jPlayer\\.prototype\\.version\\.script"
+            ],
+            "condition": "or",
+            "note": "Indicates presence of jPlayer plugin.",
+            "specific_passive_hint_type": "JQUERY_JPLAYER_DETECTED_HINT"
+        },
+        {
+            "part": "body_content",
+            "regexes": ["jquery\\.jqtouch", "jqtouch\\.min\\.js"], "condition": "or",
+            "note": "Indicates presence of jQTouch plugin.",
+            "specific_passive_hint_type": "JQUERY_JQTOUCH_DETECTED_HINT"
+        },
+        {
+            "part": "body_content",
+            "regexes": ["jquery\\.devbridge\\.autocomplete", "jquery\\.autocomplete\\.min\\.js"], "condition": "or",
+            "note": "Indicates presence of jQuery DevBridge Autocomplete plugin.",
+            "specific_passive_hint_type": "JQUERY_DEVBRIDGE_AUTOCOMPLETE_DETECTED_HINT"
+        },
+        {
+            "part": "body_content",
+            "regexes": ["jquery\\.modal", "jquery\\.modal\\.min\\.js"], "condition": "or",
+            "note": "Indicates presence of jQuery Modal plugin.",
+            "specific_passive_hint_type": "JQUERY_MODAL_DETECTED_HINT"
+        },
+        {
+            "part": "body_content",
+            "regexes": ["jquery\\.sparkline", "jquery\\.sparkline\\.min\\.js"], "condition": "or",
+            "note": "Indicates presence of jQuery Sparklines plugin.",
+            "specific_passive_hint_type": "JQUERY_SPARKLINES_DETECTED_HINT"
+        },
+        {
+            "part": "body_content",
+            "regexes": ["jquery\\.pjax", "jquery\\.pjax\\.min\\.js"], "condition": "or",
+            "note": "Indicates presence of jQuery-pjax plugin.",
+            "specific_passive_hint_type": "JQUERY_PJAX_DETECTED_HINT"
+        },
+        {
+            "part": "body_content",
+            "regexes": ["jquery\\.jqplot", "jquery\\.jqplot\\.min\\.js"], "condition": "or",
+            "note": "Indicates presence of jqPlot plugin.",
+            "specific_passive_hint_type": "JQUERY_JQPLOT_DETECTED_HINT"
+        },
+        {
+            "part": "body_content",
+            "regexes": ["jcomponent", "\\$\\.jComponent"], "condition": "or",
+            "note": "Indicates potential presence of jComponent (generic jQuery component pattern).",
+            "specific_passive_hint_type": "JQUERY_JCOMPONENT_DETECTED_HINT"
+        },
+        {
+            "part": "body_content",
+            "regexes": ["jquery\\.migrate", "jquery-migrate-([0-9\\.]+)(\\.min)?\\.js"], "condition": "or",
+            "note": "Indicates presence of jQuery Migrate plugin.",
+            "specific_passive_hint_type": "JQUERY_MIGRATE_DETECTED_HINT"
+        }
+    ],
+    "match_condition_logic": "or",
+    "evidence_format": "jQuery Hint: Matched pattern '{matched_value}' in {match_location} (HTML body). Contextual Note: '{note}'. Specific Hint Type: '{specific_passive_hint_type}'.",
+    "remediation_suggestion": "If jQuery or its plugins are detected, ensure they are updated to the latest secure versions. Consider running active scans targeting known vulnerabilities in these libraries.",
+    "tags": ["jquery", "javascript", "library_detection", "passive_hint", "fingerprint"]
+}

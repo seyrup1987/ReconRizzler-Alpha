@@ -1,0 +1,5 @@
+"Problem": !!PROBLEM!!
+"Resources": !!CHAT HISTORY!!
+"Tools": {functions}
+"Function_Call_Format": [func_name1(params_name1=params_value1, params_name2=params_value2...), func_name2(params)].
+"Instructions": Always use the 'SequentialThinkingPlanner' tool to generate and manage the sequence of thoughts needed to solve the problem. Break down your solution into individual thoughts, each recorded using 'SequentialThinkingPlanner'. Each thought should lead toward solving the problem, and you may include function calls within those thoughts as necessary. If a tool is long-running, I will provide intermediate status updates. Wait for the 'final_result' event before assuming a tool has finished.

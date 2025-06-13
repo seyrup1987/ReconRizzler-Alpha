@@ -1,0 +1,49 @@
+{
+    "id": "passive-cmd-injection-hints",
+    "name": "Potential Command Injection Hints in URL",
+    "severity": "Medium",
+    "confidence": "Tentative",
+    "description": "Keywords or patterns commonly associated with command injection vulnerabilities were found in a URL parameter name or value, or in the URL path.",
+    "passive_hint_type": "COMMAND_INJECTION_GENERIC_HINT",
+    "match_conditions": [
+        {
+            "part": "url_param_name",
+            "keywords": ["cmd", "exec", "command", "execute", "ping", "query", "run", "sh", "system", "code", "do", "process", "daemon", "dir", "ip", "host", "addr", "filename", "path", "file", "load"],
+            "condition": "or",
+            "note": "Common command-related keyword found in URL parameter name.",
+            "specific_passive_hint_type": "CMD_INJ_URL_PARAM_NAME_KEYWORD_HINT"
+        },
+        {
+            "part": "url_param_value",
+            "regexes": [
+                ";\\s*\\w+",
+                "\\|\\s*\\w+",
+                "&&\\s*\\w+",
+                "`\\w+`",
+                "\\$\\(.*\\)",
+                "whoami",
+                "id",
+                "uname",
+                "cat\\s+/etc/passwd",
+                "type\\s+%SYSTEMROOT%\\\\win.ini",
+                "nslookup\\s+",
+                "wget\\s+",
+                "curl\\s+"
+            ],
+            "condition": "or",
+            "note": "Common command injection pattern or character found in URL parameter value.",
+            "specific_passive_hint_type": "CMD_INJ_URL_PARAM_VALUE_PATTERN_HINT"
+        },
+        {
+            "part": "url_path",
+            "keywords": ["/bin/", "/sh", "/bash", "/cmd.exe", "/powershell.exe", "/exec/", "/shell/", "/cgi-bin/"],
+            "condition": "or",
+            "note": "URL path segment often associated with command execution.",
+            "specific_passive_hint_type": "CMD_INJ_URL_PATH_KEYWORD_HINT"
+        }
+    ],
+    "match_condition_logic": "or",
+    "evidence_format": "Potential CMD Injection: Pattern/Keyword '{matched_value}' found in {match_location} '{param_name_or_path}'. Contextual Note: '{note}'. Specific Hint Type: '{specific_passive_hint_type}'.",
+    "remediation_suggestion": "Avoid calling OS commands directly with user-supplied input. Use built-in language functions or libraries for specific tasks. Sanitize and validate all inputs strictly. Implement input whitelisting and least privilege.",
+    "tags": ["command_injection", "injection", "passive_hint", "os_command"]
+}

@@ -1,0 +1,58 @@
+{
+    "id": "passive-buffer-overflow-hints",
+    "name": "Potential Buffer Overflow Candidate Hints",
+    "severity": "Info",
+    "confidence": "Tentative",
+    "description": "Identifies parameters or conditions that might be candidates for buffer overflow testing due to their name, typical usage (e.g., handling large data), or observed server behavior related to input size limits. Active testing with varying payload lengths is recommended for these points.",
+    "passive_hint_type": "BOF_GENERIC_CANDIDATE_HINT",
+    "match_conditions": [
+        {
+            "part": "url_param_name",
+            "keywords": [
+                "data", "file", "filename", "content", "payload", "xml_data", "json_data", 
+                "blob", "buffer", "input", "text", "message", "description", "query", 
+                "search", "name", "value", "id", "key", "param", "arg", "upload", "import",
+                "user", "username", "password", "token", "session", "cmd", "exec", "command",
+                "long_string_data", "large_input", "custom_field_for_bulk_data"
+            ],
+            "condition": "or",
+            "note": "Parameter name suggests it might handle variable-length string, binary data, or commands, making it a candidate for length-based fuzzing.",
+            "specific_passive_hint_type": "BOF_PARAM_NAME_CANDIDATE_HINT"
+        },
+        {
+            "part": "header_name",
+            "regexes": [
+                "(?i)^X-[A-Za-z0-9_-]*(Data|Payload|Input|Content|Buffer|Value|Token|Session|Key)$",
+                "(?i)^Custom-[A-Za-z0-9_-]*(Data|Payload|Input|Content|Buffer|Value)$",
+                "(?i)^Authorization$", 
+                "(?i)^If-Match$", 
+                "(?i)^If-None-Match$"
+            ],
+            "condition": "or",
+            "note": "HTTP header name (custom or standard like Authorization) suggests it might carry application-specific data or tokens, potentially vulnerable to length issues if parsed insecurely.",
+            "specific_passive_hint_type": "BOF_HEADER_NAME_CANDIDATE_HINT"
+        },
+        {
+            "part": "body_content",
+            "regexes": [
+                "(?i)request entity too large",
+                "(?i)input length limit exceeded",
+                "(?i)maximum request length exceeded",
+                "(?i)max_input_vars.+exceeded",
+                "(?i)post_max_size.+exceeded",
+                "(?i)max_file_uploads.+exceeded",
+                "(?i)upload_max_filesize.+exceeded",
+                "(?i)string or binary data would be truncated",
+                "(?i)field.*too long",
+                "(?i)value too long for type character varying"
+            ],
+            "condition": "or",
+            "note": "Response body contains messages related to input size limits or data truncation. This indicates the application is aware of input length but might still have vulnerabilities at the boundary, in how limits are enforced, or in related data processing components.",
+            "specific_passive_hint_type": "BOF_INPUT_SIZE_LIMIT_MESSAGE_HINT"
+        }
+    ],
+    "match_condition_logic": "or",
+    "evidence_format": "Buffer Overflow Candidate Hint: Matched pattern/keyword '{matched_value}' in {match_location} (Parameter/Header: '{param_name_or_path}'). Contextual Note: '{note}'. Specific Hint Type: '{specific_passive_hint_type}'.",
+    "remediation_suggestion": "For parameters/headers identified as candidates, ensure robust server-side validation of input length and content. Use memory-safe functions and libraries, especially if dealing with native code. Perform thorough bounds checking. Active buffer overflow testing with varying payload lengths is recommended for these points.",
+    "tags": ["bof_hint", "input_validation", "length_fuzzing", "passive_hint", "cwe-120", "cwe-131", "cwe-20"]
+}

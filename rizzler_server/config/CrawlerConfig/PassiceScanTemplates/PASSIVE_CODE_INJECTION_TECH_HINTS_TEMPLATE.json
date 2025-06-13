@@ -1,0 +1,83 @@
+{
+    "id": "passive-code-injection-tech-hints",
+    "name": "Technology Hints for Potential Code Injection (PHP, ASP/ASPX)",
+    "severity": "Info",
+    "confidence": "Firm",
+    "description": "The page URL, headers, or cookies suggest the use of server-side technologies (PHP, ASP/ASPX) that are sometimes targeted by code injection attacks. This can inform targeted active scanning.",
+    "passive_hint_type": "CODE_INJECTION_TECH_GENERIC_HINT",
+    "match_conditions": [
+        {
+            "part": "url_path",
+            "regexes": [
+                "\\.php([?#]|$)",
+                "\\.phtml([?#]|$)",
+                "\\.php3([?#]|$)",
+                "\\.php4([?#]|$)",
+                "\\.php5([?#]|$)",
+                "\\.php7([?#]|$)",
+                "\\.phps([?#]|$)"
+            ],
+            "condition": "or",
+            "note": "URL contains a common PHP file extension.",
+            "specific_passive_hint_type": "PHP_FILE_EXTENSION_HINT"
+        },
+        {
+            "part": "url_path",
+            "regexes": [
+                "\\.asp([?#]|$)",
+                "\\.aspx([?#]|$)"
+            ],
+            "condition": "or",
+            "note": "URL contains a common ASP or ASP.NET file extension.",
+            "specific_passive_hint_type": "ASP_NET_FILE_EXTENSION_HINT"
+        },
+        {
+            "part": "header_value",
+            "header_name_filter": "Server",
+            "regexes": [
+                "(?i)PHP\\/([0-9\\.]+)",
+                "(?i)mod_php"
+            ],
+            "condition": "or",
+            "note": "Server header indicates PHP.",
+            "specific_passive_hint_type": "PHP_SERVER_HEADER_HINT"
+        },
+        {
+            "part": "header_value",
+            "header_name_filter": "X-Powered-By",
+            "regexes": [
+                "(?i)PHP\\/([0-9\\.]+)",
+                "(?i)ASP\\.NET"
+            ],
+            "condition": "or",
+            "note": "X-Powered-By header indicates PHP or ASP.NET.",
+            "specific_passive_hint_type": "PHP_OR_ASP_NET_POWERED_BY_HEADER_HINT"
+        },
+        {
+            "part": "header_value",
+            "header_name_filter": "Set-Cookie",
+            "regexes": [
+                "(?i)^PHPSESSID=",
+                "(?i)^ASPSESSIONID",
+                "(?i)^ASP\\.NET_SessionId="
+            ],
+            "condition": "or",
+            "note": "Session cookie name suggests PHP or ASP/ASP.NET.",
+            "specific_passive_hint_type": "PHP_OR_ASP_NET_SESSION_COOKIE_HINT"
+        },
+        {
+            "part": "body_content",
+            "regexes": [
+                "(?i)Powered by PHP",
+                "(?i)ASP\\.NET is configured to show verbose error messages"
+            ],
+            "condition": "or",
+            "note": "Content in HTML body suggests PHP or ASP.NET.",
+            "specific_passive_hint_type": "PHP_OR_ASP_NET_BODY_CONTENT_HINT"
+        }
+    ],
+    "match_condition_logic": "or",
+    "evidence_format": "Code Injection Tech Hint: Matched pattern '{matched_value}' in {match_location} (Header/Path: '{param_name_or_path}'). Contextual Note: '{note}'. Specific Hint Type: '{specific_passive_hint_type}'.",
+    "remediation_suggestion": "If PHP or ASP/ASP.NET are detected, ensure the application properly sanitizes all user input to prevent code injection. Consider running active scans targeting code injection vulnerabilities for these technologies.",
+    "tags": ["php", "asp", "aspx", "technology_detection", "passive_hint", "fingerprint", "code_injection_target"]
+}

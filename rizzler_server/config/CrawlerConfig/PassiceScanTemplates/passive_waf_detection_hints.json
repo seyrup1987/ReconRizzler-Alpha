@@ -1,0 +1,73 @@
+{
+    "id": "passive-waf-detection-hints",
+    "name": "WAF Detection Hints (Passive)",
+    "severity": "Info",
+    "confidence": "Medium",
+    "description": "The HTTP response contains signatures or patterns commonly associated with various Web Application Firewalls (WAFs). This indicates the presence of a WAF, which can influence testing strategies.",
+    "passive_hint_type": "WAF_GENERIC_PRESENCE_HINT",
+    "match_conditions": [
+        {
+            "part": "header_value", 
+            "header_name_filter": "Server",
+            "regexes": [
+                "(?i)cloudflare", "(?i)AkamaiGHost", "(?i)Sucuri/Cloudproxy", "(?i)awselb", "(?i)aws-waf", 
+                "(?i)incapsula", "(?i)barracuda", "(?i)fortiweb", "(?i)mod_security", "(?i)webknight",
+                "(?i)paloalto", "(?i)f5 big-ip", "(?i)citrix netscaler", "(?i)imperva", "(?i)radware",
+                "(?i)wallarm", "(?i)nginx_wallarm", "(?i)yundun", "(?i)yunsuo", "(?i)jiasule", "(?i)360wzws",
+                "(?i)cloudfront", "(?i)zscaler", "(?i)varnish", "(?i)litespeed", "(?i)apachetrafficserver",
+                "(?i)janusec", "(?i)uewaf", "(?i)CloudWAF"
+            ],
+            "condition": "or",
+            "note": "Server header indicates a known WAF or CDN with WAF capabilities.",
+            "specific_passive_hint_type": "WAF_SERVER_HEADER_HINT"
+        },
+        {
+            "part": "header_value",
+            "regexes": [
+                "(?i)instartrequestid", "(?i)perimeterx", "(?i)fortiwafsid=", "(?i)^ts[a-zA-Z0-9]{3,8}=", 
+                "(?i)^ecdf", "(?i)barra_counter_session=", "(?i)incap_ses|visid_incap", "(?i)cf[-|_]ray", 
+                "(?i)__cfduid", "(?i)ak_bmsc", "(?i)al[.-]?(sess|lb)=", "(?i)x-binarysec-via", 
+                "(?i)^yd.cookie=", "(?i)x-amz-cf-id", "(?i)x-amz-request-id", "(?i)x-squid-error",
+                "(?i)HWWAFSESID="
+            ],
+            "condition": "or",
+            "note": "Specific HTTP headers indicate the presence of a WAF.",
+            "specific_passive_hint_type": "WAF_SPECIFIC_HEADER_HINT"
+        },
+        {
+            "part": "body_content",
+            "regexes": [
+                "(?i)access.to.this.page.has.been.denied.because.we.believe.you.are.using.automation.tool", "(?i)whywasiblocked",
+                "(?i)webknight", "(?i)zscaler", "(?i)powered.by.fortinet", "(?i)fortigate.ips.sensor", "(?i)application.blocked",
+                "(?i)st8(id|.wa|.wf)?.?(\\d+|\\w+)?", "(?i)request.was.rejected.because.the.url.contained.a.potentially.malicious.string",
+                "(?i)rejected.by.url.scan", "(?i)request.forbidden.by.administrative.rules", "(?i)bigipserver", "(?i)BigIP|BIG-IP",
+                "(?i)cloudwebsec.radware.com", "(?i)unauthorized.activity.has.been.detected", "(?i)varnish", "(?i)security.by.cachewall",
+                "(?i)infosafe", "(?i)error(s)?.aliyun(dun)?.(com|net)", "(?i)apachetrafficserver", "(?i)malcare", "(?i)login.protection",
+                "(?i)wts.wa(f)?", "(?i)dw.inj.check", "(?i)condition.intercepted", "(?i)yunsuologo", "(?i)litespeed.web.server",
+                "(?i)cloudfront.net", "(?i)access.has.been.intercept(ed)?.by.anyu", "(?i)client.has.issued.a.malformed.or.illegal.request",
+                "(?i)systems.have.detected.unusual.traffic", "(?i)block(ed)?.by.g.cloud.security.policy", "(?i)sec-waf", "(?i)blockdos\\.net",
+                "(?i)uri.you.submitted.has.disallowed.characters", "(?i)dod.enterprise.level.protection.system", "(?i)secupress",
+                "(?i)aesecure.denied.png", "(?i)incapsula.incident.id", "(?i)nexus.?guard", "(?i)cloudflare.ray.id", "(?i)attention.required!.\\|.cloudflare",
+                "(?i)akamai", "(?i)webseal.error.message.template", "(?i)dotdefender.blocked.your.request", "(?i)pkSecurityModule",
+                "(?i)error.-.expressionengine", "(?i)protected.by.comodo.waf", "(?i)ace.xml.gateway", "(?i)barikode", "(?i)watchguard.firewall",
+                "(?i)binarysec", "(?i)bekchy.(-.)?access.denied", "(?i)bitninja", "(?i)security.check.by.bitninja", "(?i)apache",
+                "(?i)you.don.t.have.permission.to.access", "(?i)greywizard", "(?i)firewall.on.this.server.is.blocking", "(?i)viettel.waf",
+                "(?i)safedog", "(?i)yunjiasu.nginx", "(?i)requested.url.cannot.be.found.+alertlogic", "(?i)blocked.by.website.protection.from.armour",
+                "(?i)dosarrest", "(?i)has.been.blocked.in.accordance.with.company.policy.+paloalto", "(?i)a.potentially.dangerous.request",
+                "(?i)powerful.firewall", "(?i)uewaf(.deny.pages)", "(?i)janusec", "(?i)powered.by.siteguard.lite", "(?i)blocked.by.the.sonicwall",
+                "(?i)notice.jiasule", "(?i)generated.by.wordfence", "(?i)your.access.to.this.site.has.been.limited", "(?i)wzws.waf.cgi",
+                "(?i)requested.url.was.rejected..please.consult.with.your.administrator.+asm", "(?i)com.rsfirewall", "(?i)access.denied.-.sucuri.website.firewall",
+                "(?i)xuanwudun", "(?i)365cyd", "(?i)securesphere.+error", "(?i)aqb_cc.error", "(?i)modsecurity|mod_security",
+                "(?i)not.acceptable.+modsecurityowasp", "(?i)squid.+access.control", "(?i)blocked.by.the.shield", "(?i)nginix.wallarm",
+                "(?i)content=\"CloudWAF\""
+            ],
+            "condition": "or",
+            "note": "Response body contains text patterns indicative of a WAF blocking page or error message.",
+            "specific_passive_hint_type": "WAF_BODY_SIGNATURE_HINT"
+        }
+    ],
+    "match_condition_logic": "or",
+    "evidence_format": "WAF Detection Hint: Matched pattern '{matched_value}' in {match_location} (Header Name: '{header_name_filter}', Context: '{note}'). Specific Hint Type: '{specific_passive_hint_type}'.",
+    "remediation_suggestion": "The presence of a WAF can affect penetration testing. Payloads may need to be modified to bypass WAF detection. Understanding the specific WAF in use can help tailor bypass techniques.",
+    "tags": ["waf", "fingerprint", "security_appliance", "passive_hint", "cwe-200"]
+}

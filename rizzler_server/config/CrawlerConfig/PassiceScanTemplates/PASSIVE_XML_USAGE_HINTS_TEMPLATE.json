@@ -1,0 +1,70 @@
+{
+    "id": "passive-xml-usage-hints",
+    "name": "XML Usage Hints for Potential XXE",
+    "severity": "Info",
+    "confidence": "Firm",
+    "description": "The page URL, headers, or body content suggest the use of XML, which might be processed by the server. This can inform targeted active scanning for XXE vulnerabilities.",
+    "passive_hint_type": "XML_USAGE_GENERIC_HINT",
+    "match_conditions": [
+        {
+            "part": "header_value",
+            "header_name_filter": "Content-Type",
+            "regexes": [
+                "(?i)application\\/xml",
+                "(?i)text\\/xml",
+                "(?i)application\\/[a-zA-Z0-9\\-\\+]+\\+xml"
+            ],
+            "condition": "or",
+            "note": "Response Content-Type header indicates XML.",
+            "specific_passive_hint_type": "XML_CONTENT_TYPE_HEADER_HINT"
+        },
+        {
+            "part": "url_path",
+            "regexes": [
+                "\\.xml([?#]|$)",
+                "(?i)\\/xmlrpc\\.php",
+                "(?i)\\/soap",
+                "(?i)\\/webdav",
+                "(?i)\\/api\\/xml",
+                "(?i)\\/service\\.asmx"
+            ],
+            "condition": "or",
+            "note": "URL path suggests XML usage (e.g., .xml extension, SOAP, WebDAV, XML-RPC).",
+            "specific_passive_hint_type": "XML_URL_PATH_HINT"
+        },
+        {
+            "part": "url_param_name",
+            "keywords": ["xml", "xmldata", "soaprequest", "xmlpayload"],
+            "condition": "or",
+            "note": "URL parameter name suggests it might carry XML data.",
+            "specific_passive_hint_type": "XML_URL_PARAM_NAME_HINT"
+        },
+        {
+            "part": "url_param_value",
+            "regexes": [
+                "(?i)^<\\?xml",
+                "(?i)^<[a-zA-Z0-9_:]+"
+            ],
+            "condition": "or",
+            "note": "URL parameter value appears to contain XML-like data (e.g., starts with XML declaration or a tag).",
+            "specific_passive_hint_type": "XML_URL_PARAM_VALUE_HINT"
+        },
+        {
+            "part": "body_content",
+            "regexes": [
+                "(?i)^\\s*<\\?xml version=",
+                "(?i)<soap:Envelope",
+                "(?i)<soapenv:Envelope",
+                "(?i)<SOAP-ENV:Envelope",
+                "(?i)<D:multistatus"
+            ],
+            "condition": "or",
+            "note": "Response body starts with an XML declaration or common XML root elements (SOAP, WebDAV).",
+            "specific_passive_hint_type": "XML_BODY_CONTENT_HINT"
+        }
+    ],
+    "match_condition_logic": "or",
+    "evidence_format": "XML Usage Hint: Matched pattern '{matched_value}' in {match_location} (Header/Path/Param: '{param_name_or_path}'). Contextual Note: '{note}'. Specific Hint Type: '{specific_passive_hint_type}'.",
+    "remediation_suggestion": "If XML is processed by the application, ensure that XML parsers are configured to disable external entity processing to prevent XXE. Consider running active scans targeting XXE vulnerabilities.",
+    "tags": ["xml", "xxe_target", "soap", "webdav", "technology_detection", "passive_hint", "fingerprint"]
+}

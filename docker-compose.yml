@@ -1,0 +1,55 @@
+# --- START OF MODIFIED docker-compose.yml ---
+services:
+  rizzler_server:
+    build:
+      context: ./rizzler_server # Path to the directory containing the Dockerfile for the server
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8000"
+    container_name: mcp_server
+    restart: unless-stopped
+    networks:
+      - recon_network
+    dns: 
+      - 8.8.8.8   # Google's public DNS
+      - 8.8.4.4   # Google's public DNS
+      - 1.1.1.1   # Cloudflare's public DNS
+    healthcheck: 
+      test: ["CMD", "curl", "-f", "http://localhost:8000/mcp/tools"] 
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 5m
+  rizzler_client:
+    build:
+      context: ./rizzler_client # Assuming this is the context for the client Dockerfile
+      dockerfile: Dockerfile   # Assuming the Dockerfile you provided is for the client
+    container_name: mcp_client_gui
+    depends_on:
+      rizzler_server:
+        condition: service_healthy
+    networks:
+      - recon_network
+    environment:
+      - DISPLAY=${DISPLAY}
+      - XAUTHORITY=/root/.Xauthority 
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ~/.Xauthority:/root/.Xauthority:rw 
+      - ./mcp_client_downloads:/app/host_downloads  
+    env_file:
+      - ./rizzler_client/.env # Assuming .env is in rizzler_client directory
+    devices:
+      - /dev/dri:/dev/dri
+  searxng:
+    image: searxng/searxng:latest
+    ports:
+      - "7070:8080" 
+    container_name: searxng_instance
+    restart: unless-stopped
+    networks: 
+      - recon_network
+networks:
+  recon_network:
+    driver: bridge
+# --- END OF MODIFIED docker-compose.yml ---
