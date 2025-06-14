@@ -159,12 +159,7 @@ Open your terminal or command prompt and run:
 
 git clone <your-repository-url> # Replace <your-repository-url> with the actual URL
 cd <repository-name>             # Replace <repository-name> with the cloned folder name
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Bash
-IGNORE_WHEN_COPYING_END
+
 Step 2: Configure Environment Variables
 
 The client application needs your Google API Key to interact with the Gemini LLM.
@@ -172,13 +167,6 @@ The client application needs your Google API Key to interact with the Gemini LLM
 Navigate to the rizzler_client folder within the cloned repository:
 
 cd rizzler_client
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Bash
-IGNORE_WHEN_COPYING_END
-
 Create or edit the .env file in this rizzler_client directory. If an .env.example file exists, you can copy it to .env.
 
 Add the following lines to your .env file, replacing the placeholder with your actual Google API Key:
@@ -190,12 +178,6 @@ MCP_SERVER_BASE_URL="http://rizzler_server:8000" # Default, works with Docker Co
 # Optional, if your LLM or other services require them:
 # GOOGLE_PROJECT_ID="YOUR_GOOGLE_CLOUD_PROJECT_ID"
 # GOOGLE_LOCATION="YOUR_GOOGLE_CLOUD_PROJECT_LOCATION" # e.g., us-central1
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Env
-IGNORE_WHEN_COPYING_END
 
 Important: The MCP_SERVER_BASE_URL is pre-configured to work within the Docker network. Do not change it unless you understand the implications for inter-container communication.
 
@@ -204,12 +186,7 @@ The GOOGLE_PROJECT_ID and GOOGLE_LOCATION might be required by some Google Cloud
 Navigate back to the root directory of the cloned repository:
 
 cd ..
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Bash
-IGNORE_WHEN_COPYING_END
+
 Step 3: X11 Forwarding Setup (Platform Specific)
 
 This step is crucial for the GUI client to display on your host machine. Perform these steps on your host machine, before running docker-compose up.
@@ -221,12 +198,6 @@ Your DISPLAY environment variable (e.g., :0) should typically be set correctly b
 Open a terminal on your host and run the following command to allow local Docker containers to connect to your X server:
 
 xhost +local:docker
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Bash
-IGNORE_WHEN_COPYING_END
 
 Note: This command grants access to any local Docker container. You can revoke this permission after you're done with xhost -local:docker.
 
@@ -251,12 +222,6 @@ In your macOS terminal (the one you'll use to run docker-compose), execute:
 
 export DISPLAY=$(ipconfig getifaddr en0):0
 # If en0 (Wi-Fi) is not your active interface, try en1, etc.
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Bash
-IGNORE_WHEN_COPYING_END
 
 This setting is for the current terminal session.
 
@@ -285,12 +250,6 @@ The docker-compose.yml file for the rizzler_client service includes DISPLAY=${DI
 DISPLAY=host.docker.internal:0.0
 # OR, if the above doesn't work:
 # DISPLAY=YOUR_WINDOWS_HOST_IP:0.0
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Env
-IGNORE_WHEN_COPYING_END
 
 Firewall: Ensure your Windows Firewall allows connections for VcXsrv. You might get a prompt when VcXsrv first runs; allow it.
 
@@ -309,12 +268,6 @@ Step 4: Build and Run with Docker Compose
 Ensure Docker Desktop (or Docker daemon) is running. From the root directory of the cloned repository (where docker-compose.yml is located), run:
 
 docker-compose up --build
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Bash
-IGNORE_WHEN_COPYING_END
 
 This command will:
 
@@ -335,12 +288,6 @@ Troubleshooting X11
 GUI Doesn't Appear: Check the logs of the rizzler_client container:
 
 docker logs mcp_client_gui
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Bash
-IGNORE_WHEN_COPYING_END
 
 Look for errors like "cannot open display", "Client is not authorized to connect to Server", or "GLX version mismatch".
 
@@ -394,12 +341,6 @@ Example (add this under the volumes: section for the rizzler_server service in d
 # In docker-compose.yml, under rizzler_server:
 volumes:
   - ./mcp_server_db_data:/app/db/faiss_db # Creates ./mcp_server_db_data on your host
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Yaml
-IGNORE_WHEN_COPYING_END
 
 🔑 API Keys: Your GOOGLE_API_KEY is sensitive. Keep it secure and do not commit it directly into public repositories. The .env file is typically gitignored; ensure this is the case for your project.
 
