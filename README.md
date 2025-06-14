@@ -1,4 +1,4 @@
-# Vishu - Master Control Program (MCP) Suite 🚀
+# Vishu - Model Context Protocol (MCP) Suite 🚀
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) <!-- Replace with your actual license -->
 [![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
